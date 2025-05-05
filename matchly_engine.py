@@ -22,36 +22,40 @@ class MatchlyEngine:
         os.environ["OPENAI_API_KEY"] = self.api_key
         
     def extract_text_from_pdf(self, pdf_path):
-        """Extract text content from a PDF file."""
-        text = ""
+        """Extract text content from a PDF file, treating each page as a separate resume."""
+        resumes = []
         try:
             with open(pdf_path, 'rb') as file:
                 pdf_reader = PyPDF2.PdfReader(file)
                 for page_num in range(len(pdf_reader.pages)):
-                    text += pdf_reader.pages[page_num].extract_text()
-            return text
+                    page_text = pdf_reader.pages[page_num].extract_text()
+                    resumes.append({
+                        'source_file': os.path.basename(pdf_path),
+                        'page': page_num + 1,
+                        'content': page_text
+                    })
+            return resumes
         except Exception as e:
             print(f"Error extracting text from {pdf_path}: {e}")
-            return ""
+            return []
     
     def get_resumes(self, data_folder="data"):
-        """Get all resumes from the data folder."""
-        resumes = {}
+        """Get all resumes from the data folder, treating each page as a separate resume."""
+        resumes = []
         # Look for PDF files in the data folder
         pdf_files = glob.glob(os.path.join(data_folder, "*.pdf"))
         
         for pdf_file in pdf_files:
-            filename = os.path.basename(pdf_file)
-            content = self.extract_text_from_pdf(pdf_file)
-            resumes[filename] = content
+            pdf_resumes = self.extract_text_from_pdf(pdf_file)
+            resumes.extend(pdf_resumes)
             
         return resumes
     
     def match_resume_to_job(self, job_description, resumes, model="gpt-3.5-turbo"):
         """Match resumes to job description using LiteLLM."""
         # Prepare resumes as context
-        resume_texts = [f"Resume {i+1} ({filename}):\n{content}" 
-                        for i, (filename, content) in enumerate(resumes.items())]
+        resume_texts = [f"Resume {i+1} (File: {resume['source_file']}, Page: {resume['page']}):\n{resume['content']}" 
+                        for i, resume in enumerate(resumes)]
         
         # Combine all resumes with job description in the prompt
         prompt = f"""Job Description:
@@ -63,8 +67,8 @@ I have the following resumes:
 Based on the job description, rank these resumes from best to worst match. 
 Provide a score from 0-100 for each resume and explain the reasoning. 
 Format your response as:
-1. [Filename] - Score: XX/100 - [Brief explanation]
-2. [Filename] - Score: XX/100 - [Brief explanation]
+1. Resume X (File: filename, Page: Y) - Score: XX/100 - [Brief explanation]
+2. Resume Z (File: filename, Page: W) - Score: XX/100 - [Brief explanation]
 And so on...
 """
         
@@ -97,14 +101,14 @@ def main():
     
     # Get resumes
     resumes = engine.get_resumes(args.data_folder)
-    
+    resumes = resumes[:10]
     if not resumes:
         print(f"No PDF resumes found in {args.data_folder}. Please add some resume PDFs and try again.")
         return
     
-    print(f"Found {len(resumes)} resumes in {args.data_folder}:")
-    for filename in resumes.keys():
-        print(f"- {filename}")
+    print(f"Found {len(resumes)} resumes across {len(set(r['source_file'] for r in resumes))} PDF files:")
+    for i, resume in enumerate(resumes):
+        print(f"- Resume {i+1}: {resume['source_file']} (Page {resume['page']})")
     
     # Get job description
     job_description = args.job_description
