@@ -1,0 +1,33 @@
+Job Title: Data Analyst
+
+Company: Tech Solutions Inc.
+Location: Remote/Hybrid
+
+Job Description:
+We are seeking a skilled Data Analyst to join our growing analytics team. The ideal candidate will turn data into information, information into insight, and insight into business decisions.
+
+Responsibilities:
+- Interpret data, analyze results using statistical techniques
+- Develop and implement databases, data collection systems, and other strategies for optimizing statistical efficiency and quality
+- Identify, analyze, and interpret trends or patterns in complex data sets
+- Filter and clean data, reviewing reports and performance indicators to identify and correct code problems
+- Work with management to prioritize business and information needs
+- Locate and define new process improvement opportunities
+
+Requirements:
+- Bachelor's degree in Statistics, Mathematics, Computer Science, Economics, or related field
+- 2+ years of experience in data analysis or business intelligence
+- Proficiency in SQL and experience with databases
+- Experience with data visualization tools (Tableau, Power BI, etc.)
+- Strong knowledge of Python or R for data manipulation and analysis
+- Experience with Excel and statistical analysis
+- Excellent analytical and problem-solving skills
+- Strong communication skills and ability to present findings to non-technical audiences
+
+Preferred Qualifications:
+- Master's degree in a quantitative field
+- Experience with healthcare data or public policy analysis
+- Knowledge of machine learning techniques
+- Experience with cloud platforms (AWS, Azure, GCP)
+
+We offer competitive salary, benefits, and a collaborative work environment with opportunities for professional growth. 
